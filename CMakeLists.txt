@@ -1,0 +1,21 @@
+cmake_minimum_required(VERSION 3.10)
+set(CMAKE_CXX_STANDARD 17)
+
+project(graphics)
+
+file(GLOB SOURCE_FILES src/*.cpp)
+
+add_executable(${PROJECT_NAME} main.cpp ${SOURCE_FILES})
+
+add_subdirectory(vendor/glew)
+add_subdirectory(vendor/glfw)
+add_subdirectory(vendor/spdlog)
+
+target_include_directories(${PROJECT_NAME}
+	PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/vendor/glew/include
+	PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/vendor/glfw/include
+	PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/vendor/spdlog/include
+	PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include
+)
+
+target_link_libraries(${PROJECT_NAME} glfw libglew_static spdlog)
