@@ -65,6 +65,8 @@ int main(int argc, const char** argv) {
     // create opengl viewport
     glViewport(0, 0, 800, 600);
 
+    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+
     // vertex shader object
     unsigned int vertexShader;
     vertexShader = glCreateShader(GL_VERTEX_SHADER);
@@ -90,36 +92,35 @@ int main(int argc, const char** argv) {
     glDeleteShader(vertexShader);
     glDeleteShader(fragmentShader);
 
-    // triangle vertices
-    float vertices[] = {
-        // first triangle
+    float firstTriangle[] = {
         -0.9f, -0.5f, 0.0f,  // left 
         -0.0f, -0.5f, 0.0f,  // right
-        -0.45f, 0.5f, 0.0f,  // top 
+        -0.45f, 0.5f, 0.0f}; // top 
 
-        // second triangle
+    float secondTriangle[] = {
         -0.5f, -0.5f, 0.0f,  // left 
          0.5f, -0.5f, 0.0f,  // right
          0.0f,  0.5f, 0.0f}; // top
 
-    unsigned int VBO;  // vertex buffer object
-    unsigned int VAO;  // vertex array object
+    // vertex array and buffer object
+    unsigned int VBOs[2], VAOs[2];
 
     // create vertex array and buffer objects
-    glGenVertexArrays(1, &VAO);  // vertex array first
-    glGenBuffers(1, &VBO);
+    glGenVertexArrays(2, VAOs);  // vertex array first
+    glGenBuffers(2, VBOs);
 
-    // bind objects
-    glBindVertexArray(VAO);
-
-    glBindBuffer(GL_ARRAY_BUFFER, VBO);
-
-    // add data to buffer object
-    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-
-    // tell opengl how to interpret the vertex data
+    // first triangle first
+    glBindVertexArray(VAOs[0]);
+    glBindBuffer(GL_ARRAY_BUFFER, VBOs[0]);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(firstTriangle), firstTriangle, GL_STATIC_DRAW);
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+    glEnableVertexAttribArray(GL_FALSE);
 
+    // second triangle
+    glBindVertexArray(VAOs[1]);
+    glBindBuffer(GL_ARRAY_BUFFER, VBOs[1]);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(secondTriangle), secondTriangle, GL_STATIC_DRAW);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(GL_FALSE);
 
     // main loop
@@ -133,7 +134,11 @@ int main(int argc, const char** argv) {
         // draw triangle
         glUseProgram(shaderProgram);
         // glBindVertexArray(VAO);
-        glDrawArrays(GL_TRIANGLES, 0, 6);
+        glBindVertexArray(VAOs[0]);
+        glDrawArrays(GL_TRIANGLES, 0, 3);
+
+        glBindVertexArray(VAOs[1]);
+        glDrawArrays(GL_TRIANGLES, 0, 3);
 
         // io
         glfwSwapBuffers(window);
@@ -141,8 +146,8 @@ int main(int argc, const char** argv) {
     }
 
     // cleanup
-    glDeleteVertexArrays(1, &VAO);
-    glDeleteBuffers(1, &VBO);
+    glDeleteVertexArrays(1, VAOs);
+    glDeleteBuffers(1, VBOs);
     glDeleteProgram(shaderProgram);
 
     glfwTerminate();
