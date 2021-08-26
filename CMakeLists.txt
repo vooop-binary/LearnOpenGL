@@ -11,6 +11,8 @@ add_subdirectory(vendor/glew)
 add_subdirectory(vendor/glfw)
 add_subdirectory(vendor/spdlog)
 
+target_precompile_headers(${PROJECT_NAME} PUBLIC include/Core.h)
+
 target_include_directories(${PROJECT_NAME}
 	PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/vendor/glew/include
 	PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/vendor/glfw/include
