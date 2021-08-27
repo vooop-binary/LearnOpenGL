@@ -50,7 +50,8 @@ int main() {
 
     // build and compile our shader program
     // ------------------------------------
-    Shader shader("/path/to/shaders/shader.vs", "/path/to/shaders/shader.fs");
+    Shader shader("/path/to/shaders/shader.vs",
+                  "/path/to/shaders/shader.fs");
 
     // set up vertex data (and buffer(s)) and configure vertex attributes
     // ------------------------------------------------------------------
@@ -94,8 +95,8 @@ int main() {
         glClear(GL_COLOR_BUFFER_BIT);
 
         // draw triangle
-        glUseProgram(shaderProgram1);
-        // glBindVertexArray(VAO);
+        shader.use();
+        glBindVertexArray(VAO);
         glDrawArrays(GL_TRIANGLES, 0, 3);
 
         // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
