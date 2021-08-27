@@ -1,14 +1,13 @@
 #pragma once
 
 #include <Core.h>
-
 class Shader {
    public:
     // the program ID
     unsigned int ID;
 
     // constructor reads and builds the shader
-    Shader(const char* vertexPath, const char* fragmentPath);
+    Shader(std::string vertexPath, std::string fragmentPath);
     // use/activate the shader
     void use();
     // utility uniform functions

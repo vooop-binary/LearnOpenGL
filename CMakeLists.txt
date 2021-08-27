@@ -11,6 +11,9 @@ add_subdirectory(vendor/glew)
 add_subdirectory(vendor/glfw)
 add_subdirectory(vendor/spdlog)
 
+configure_file(configuration/root_directory.h.in configuration/root_directory.h)
+include_directories(${CMAKE_BINARY_DIR}/configuration)
+
 target_precompile_headers(${PROJECT_NAME} PUBLIC include/Core.h)
 
 target_include_directories(${PROJECT_NAME}
@@ -18,6 +21,7 @@ target_include_directories(${PROJECT_NAME}
 	PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/vendor/glfw/include
 	PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/vendor/spdlog/include
 	PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include
+	PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/vendor/stb_image
 )
 
 target_link_libraries(${PROJECT_NAME} glfw libglew_static spdlog)
