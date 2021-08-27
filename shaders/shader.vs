@@ -8,5 +8,5 @@ out vec3 ourColor;
 void main()
 {
     gl_Position = vec4(vec3(aPos.x + offset, -aPos.y, aPos.z), 1.0);
-    ourColor = aColor;
+    ourColor = aPos;
 }
