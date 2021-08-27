@@ -95,6 +95,9 @@ int main() {
         glClear(GL_COLOR_BUFFER_BIT);
 
         // draw triangle
+        // -------------
+        float time = glfwGetTime();
+        shader.setFloat("offset", sin(time));
         shader.use();
         glBindVertexArray(VAO);
         glDrawArrays(GL_TRIANGLES, 0, 3);
