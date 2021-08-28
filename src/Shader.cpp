@@ -1,15 +1,15 @@
 #include "Shader.h"
 
-Shader::Shader(std::string vertexPath, std::string fragmentPath) {
+Shader::Shader(const char* vertexPath, const char* fragmentPath) {
     // retrieve the vertex/fragment source code from the file path
     std::string vertexCode;
     std::string fragmentCode;
     std::ifstream vShaderFile;
     std::ifstream fShaderFile;
 
-    // ensure istream objects can throw exceptions
-    vShaderFile.exceptions(std::istream::failbit | std::istream::badbit);
-    fShaderFile.exceptions(std::istream::failbit | std::istream::badbit);
+    // ensure ifstream objects can throw exceptions:
+    vShaderFile.exceptions (std::ifstream::failbit | std::ifstream::badbit);
+    fShaderFile.exceptions (std::ifstream::failbit | std::ifstream::badbit);
 
     try {
         // open files
@@ -29,7 +29,7 @@ Shader::Shader(std::string vertexPath, std::string fragmentPath) {
         vertexCode = vShaderStream.str();
         fragmentCode = fShaderStream.str();
 
-    } catch (std::ifstream::failure& e) {
+    } catch (const std::ifstream::failure& e) {
         spdlog::error("File Error: {}", e.what());
     }
 
