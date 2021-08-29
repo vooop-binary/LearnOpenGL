@@ -3,8 +3,6 @@
 #define STB_IMAGE_IMPLEMENTATION
 #include <stb_image.h>
 
-float alpha = 0.2;
-
 void framebufferSizeCallback(GLFWwindow *window, int width, int height);
 void processInput(GLFWwindow *window);
 
@@ -115,7 +113,7 @@ int main() {
     // load image, create texture1 and generate mipmaps
     stbi_set_flip_vertically_on_load(true);
     int width, height, nrChannels;
-    unsigned char *data = stbi_load("../resources/textures/container.jpeg", &width, &height, &nrChannels, 0);
+    unsigned char *data = stbi_load("../resources/textures/wood.png", &width, &height, &nrChannels, 0);
     if (data) {
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
         glGenerateMipmap(GL_TEXTURE_2D);
@@ -144,7 +142,6 @@ int main() {
         spdlog::error("Failed to load texture");
     }
 
-   
     // tell opengl for each sampler to which texture unit it belongs to (only has to be done once)
     // -------------------------------------------------------------------------------------------
     shader.use();
@@ -171,20 +168,33 @@ int main() {
         glActiveTexture(GL_TEXTURE1);   // active texture unit first
         glBindTexture(GL_TEXTURE_2D, texture2);
 
-         // rotate container
+        // draw containers
         // ----------------
-        glm::mat4 trans = glm::mat4(1.0f);
-        float time = (float)glfwGetTime();
-        trans = glm::rotate(trans, glm::radians(sinf(time)*50), glm::vec3(0.0, 0.0, 1.0));
-        trans = glm::scale(trans, glm::vec3(sinf(time), cosf(time), tanf(time)));
+        glm::mat4 trans = glm::mat4(1.0f);  // make sure to initialize matrix to identity matrix first
+        float time = glfwGetTime();
 
-        // render container
-        shader.use();
+        // first container
+        // ---------------
+        trans = glm::translate(trans, glm::vec3(sinf(time), cosf(time), 0.0f));
+        trans = glm::rotate(trans, sinf(time)*cosf(time), glm::vec3(1.0f, 1.0f, 1.0f));
+        trans = glm::scale(trans, glm::vec3(sinf(time), cosf(time), 1));
+        // get their uniform location and set matrix (using glm::value_ptr)
+        unsigned int transLoc = glGetUniformLocation(shader.ID, "transform");
+        glUniformMatrix4fv(transLoc, 1, GL_FALSE, glm::value_ptr(trans));
+
+        // with the uniform matrix set, draw the first container
         glBindVertexArray(VAO);
         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
-        unsigned int transformLoc = glGetUniformLocation(shader.ID, "transform");
-        glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(trans));
+        // second container
+        // ----------------
+        trans = glm::mat4(1.0f); // reset it to identity matrix
+        // trans = glm::translate(trans, glm::vec3(-0.5f, 0.5f, 0.0f));
+        trans = glm::scale(trans, glm::vec3(sinf(time), sinf(time), sinf(time)));
+        glUniformMatrix4fv(transLoc, 1, GL_FALSE, &trans[0][0]); // this time take the matrix value array's first element as its memory pointer value
+
+        // now with the uniform matrix being replaced with new transformations, draw it again.
+        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
         // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
         // -------------------------------------------------------------------------------
@@ -209,13 +219,6 @@ int main() {
 void processInput(GLFWwindow *window) {
     if (glfwGetKey(window, GLFW_KEY_ESCAPE) || glfwGetKey(window, 'Q') == GLFW_PRESS)
         glfwSetWindowShouldClose(window, true);
-    // render container
-    if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS) {
-        alpha += 0.01f;
-    }
-    if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS) {
-        alpha -= 0.01f;
-    }
 }
 
 // glfw: whenever the window size changed (by OS or user resize) this callback function executes
