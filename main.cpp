@@ -142,11 +142,13 @@ int main() {
         spdlog::error("Failed to load texture");
     }
 
+   
     // tell opengl for each sampler to which texture unit it belongs to (only has to be done once)
     // -------------------------------------------------------------------------------------------
     shader.use();
     shader.setInt("texture1", 0);
     shader.setInt("texture2", 1);
+
 
     // render loop
     // -----------
@@ -167,10 +169,20 @@ int main() {
         glActiveTexture(GL_TEXTURE1);   // active texture unit first
         glBindTexture(GL_TEXTURE_2D, texture2);
 
+         // rotate container
+        // ----------------
+        glm::mat4 trans = glm::mat4(1.0f);
+        float time = (float)glfwGetTime();
+        trans = glm::rotate(trans, glm::radians(sinf(time)*50), glm::vec3(0.0, 0.0, 1.0));
+        trans = glm::scale(trans, glm::vec3(sinf(time), cosf(time), tanf(time)));
+
         // render container
         shader.use();
         glBindVertexArray(VAO);
         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+
+        unsigned int transformLoc = glGetUniformLocation(shader.ID, "transform");
+        glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(trans));
 
         // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
         // -------------------------------------------------------------------------------
