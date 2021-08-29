@@ -9,6 +9,7 @@ add_executable(${PROJECT_NAME} main.cpp ${SOURCE_FILES})
 
 add_subdirectory(vendor/glew)
 add_subdirectory(vendor/glfw)
+add_subdirectory(vendor/glm)
 add_subdirectory(vendor/spdlog)
 
 configure_file(configuration/root_directory.h.in configuration/root_directory.h)
@@ -19,9 +20,10 @@ target_precompile_headers(${PROJECT_NAME} PUBLIC include/Core.h)
 target_include_directories(${PROJECT_NAME}
 	PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/vendor/glew/include
 	PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/vendor/glfw/include
+	PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/vendor/glm/include
 	PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/vendor/spdlog/include
 	PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include
 	PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/vendor/stb_image
 )
 
-target_link_libraries(${PROJECT_NAME} glfw libglew_static spdlog)
+target_link_libraries(${PROJECT_NAME} glfw libglew_static spdlog glm)

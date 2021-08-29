@@ -7,7 +7,7 @@ class Shader {
     unsigned int ID;
 
     // constructor reads and builds the shader
-    Shader(std::string vertexPath, std::string fragmentPath);
+    Shader(const char* vertexPath, const char* fragmentPath);
     // use/activate the shader
     void use();
     // utility uniform functions
