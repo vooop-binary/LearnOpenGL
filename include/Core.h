@@ -11,6 +11,8 @@
 #include <glm/gtc/type_ptr.hpp>
 #include <iostream>
 #include <sstream>
+#include <vector>
 #include <string>
 
 #include "Shader.h"
+#include "Camera.h"
